@@ -50,19 +50,20 @@ const seedCompaniesDb = async () => {
         )`);
 
     await sequelize.query(
-      `INSERT INTO city (cityname) VALUES('Stockholm', 'Gothenburg', 'Halmstad')`
+      `INSERT INTO city (cityname) VALUES ('Stockholm'), ('Gothenburg'), ('Halmstad')`
     );
 
     await sequelize.query(
-      `INSERT INTO company (name, adress, fk_city_id) VALUES('Sax och Fön', 'Drottninggatan 105', (SELECT id FROM city WHERE cityname = 'Stockholm'));
-       INSERT INTO company (name, adress, fk_city_id) VALUES('Hårfin', 'Salonggatan 1', 'Gothenburg',(SELECT id FROM city WHERE cityname = 'Stockholm')),
-       INSERT INTO company (name, adress, fk_city_id) VALUES('Peach Stockholm', 'Vasagatan 12',(SELECT id FROM city WHERE cityname = 'Stockholm')),
-       INSERT INTO company (name, adress, fk_city_id) VALUES('Snap Frisör', 'Odyssen väg 7',(SELECT id FROM city WHERE cityname = 'Halmstad')),
-       INSERT INTO company (name, adress, fk_city_id) VALUES('Haircare', 'Frisörgatan 102',(SELECT id FROM city WHERE cityname = 'Halmstad')),
-       INSERT INTO company (name, adress, fk_city_id) VALUES('Barber Shop', 'Drakvägen 1',(SELECT id FROM city WHERE cityname = 'Gothenburg')),
-       INSERT INTO company (name, adress, fk_city_id) VALUES('Håret, 'Mjällgatan 93',(SELECT id FROM city WHERE cityname = 'Stockholm' )),
-       INSERT INTO company (name, adress, fk_city_id) VALUES('Kungsholmens Frisör',(SELECT id FROM city WHERE cityname = 'Stockholm')),
-       INSERT INTO company (name, adress, fk_city_id) VALUES('Hair Lady', 'Odengatan 23',(SELECT id FROM city WHERE cityname = 'Stockholm'))`);
+      `INSERT INTO company (name, adress, fk_city_id) VALUES
+      ('Sax och Fön', 'Drottninggatan 105', (SELECT id FROM city WHERE cityname = 'Stockholm')),
+      ('Hårfin', 'Salonggatan 1',(SELECT id FROM city WHERE cityname = 'Stockholm')),
+      ('Peach Stockholm', 'Vasagatan 12',(SELECT id FROM city WHERE cityname = 'Stockholm')),
+      ('Snap Frisör', 'Odyssen väg 7',(SELECT id FROM city WHERE cityname = 'Halmstad')),
+     ('Haircare', 'Frisörgatan 102',(SELECT id FROM city WHERE cityname = 'Halmstad')),
+     ('Barber Shop', 'Drakvägen 1',(SELECT id FROM city WHERE cityname = 'Gothenburg')),
+     ('Håret', 'Mjällgatan 93',(SELECT id FROM city WHERE cityname = 'Stockholm' )),
+     ('Kungsholmens Frisör', 'Saxgatan 93', (SELECT id FROM city WHERE cityname = 'Stockholm')),
+     ('Hair Lady', 'Odengatan 23',(SELECT id FROM city WHERE cityname = 'Stockholm'))`);
   } catch (error) {}
 };
 
