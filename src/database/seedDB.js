@@ -54,15 +54,26 @@ const seedCompaniesDb = async () => {
     );
 
     await sequelize.query(
-       `INSERT INTO company (name, adress, city) VALUES('Sax och Fön', 'Drottninggatan 105', (SELECT id FROM city WHERE cityname = 'Stockholm')),
-        INSERT INTO company (name, adress, city) VALUES('Hårfin', 'Salonggatan 1', 'Gothenburg', (SELECT id FROM city WHERE cityname = 'Stockholm')),
-        INSERT INTO company (name, adress, city) VALUES('Peach Stockholm', 'Vasagatan 12',  (SELECT id FROM city WHERE cityname = 'Stockholm')),
-        INSERT INTO company (name, adress, city) VALUES('Snap Frisör', 'Odyssen väg 7', (SELECT id FROM city WHERE cityname = 'Halmstad')),
-        INSERT INTO company (name, adress, city) VALUES('Haircare', 'Frisörgatan 102', (SELECT id FROM city WHERE cityname = 'Halmstad')),
-        INSERT INTO company (name, adress, city) VALUES('Barber Shop', 'Drakvägen 1', (SELECT id FROM city WHERE cityname = 'Gothenburg')),
-        INSERT INTO company (name, adress, city) VALUES('Håret, 'Mjällgatan 93', (SELECT id FROM city WHERE cityname = 'Stockholm' )),
-        INSERT INTO company (name, adress, city) VALUES('Kungsholmens Frisör', (SELECT id FROM city WHERE cityname = 'Stockholm')),
-        INSERT INTO company (name, adress, city) VALUES('Hair Lady', 'Odengatan 23', (SELECT id FROM city WHERE cityname = 'Stockholm'))`);
+      `INSERT INTO company (name, adress, city) VALUES('Sax och Fön', 'Drottninggatan 105', (SELECT id FROM city WHERE cityname = 'Stockholm')),
+       INSERT INTO company (name, adress, city) VALUES('Hårfin', 'Salonggatan 1', 'Gothenburg', (SELECT id FROM city WHERE cityname = 'Stockholm')),
+       INSERT INTO company (name, adress, city) VALUES('Peach Stockholm', 'Vasagatan 12',  (SELECT id FROM city WHERE cityname = 'Stockholm')),
+       INSERT INTO company (name, adress, city) VALUES('Snap Frisör', 'Odyssen väg 7', (SELECT id FROM city WHERE cityname = 'Halmstad')),
+       INSERT INTO company (name, adress, city) VALUES('Haircare', 'Frisörgatan 102', (SELECT id FROM city WHERE cityname = 'Halmstad')),
+       INSERT INTO company (name, adress, city) VALUES('Barber Shop', 'Drakvägen 1', (SELECT id FROM city WHERE cityname = 'Gothenburg')),
+       INSERT INTO company (name, adress, city) VALUES('Håret, 'Mjällgatan 93', (SELECT id FROM city WHERE cityname = 'Stockholm' )),
+       INSERT INTO company (name, adress, city) VALUES('Kungsholmens Frisör', (SELECT id FROM city WHERE cityname = 'Stockholm')),
+       INSERT INTO company (name, adress, city) VALUES('Hair Lady', 'Odengatan 23', (SELECT id FROM city WHERE cityname = 'Stockholm'))`);
+
+    // await sequelize.query(
+    //    `INSERT INTO company (name, adress, city) VALUES('Sax och Fön', 'Drottninggatan 105', (SELECT id FROM city WHERE cityname = 'Stockholm')),
+    //     INSERT INTO company (name, adress, city) VALUES('Hårfin', 'Salonggatan 1', 'Gothenburg', (SELECT id FROM city WHERE cityname = 'Stockholm')),
+    //     INSERT INTO company (name, adress, city) VALUES('Peach Stockholm', 'Vasagatan 12',  (SELECT id FROM city WHERE cityname = 'Stockholm')),
+    //     INSERT INTO company (name, adress, city) VALUES('Snap Frisör', 'Odyssen väg 7', (SELECT id FROM city WHERE cityname = 'Halmstad')),
+    //     INSERT INTO company (name, adress, city) VALUES('Haircare', 'Frisörgatan 102', (SELECT id FROM city WHERE cityname = 'Halmstad')),
+    //     INSERT INTO company (name, adress, city) VALUES('Barber Shop', 'Drakvägen 1', (SELECT id FROM city WHERE cityname = 'Gothenburg')),
+    //     INSERT INTO company (name, adress, city) VALUES('Håret, 'Mjällgatan 93', (SELECT id FROM city WHERE cityname = 'Stockholm' )),
+    //     INSERT INTO company (name, adress, city) VALUES('Kungsholmens Frisör', (SELECT id FROM city WHERE cityname = 'Stockholm')),
+    //     INSERT INTO company (name, adress, city) VALUES('Hair Lady', 'Odengatan 23', (SELECT id FROM city WHERE cityname = 'Stockholm'))`);
   } catch (error) {}
 };
 
