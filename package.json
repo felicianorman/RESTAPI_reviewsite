@@ -11,11 +11,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./src/app.js",
     "seedDB": "node ./src/database/seedDB.js"
-<<<<<<< HEAD
-=======
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
->>>>>>> 2a745eebb1862c172b59909d2127492eb333e22e
   }
 }

@@ -1,5 +1,4 @@
 const { sequelize } = require("./config");
-const { companies } = require("../data/company");
 
 const seedCompaniesDb = async () => {
   try {
@@ -63,7 +62,19 @@ const seedCompaniesDb = async () => {
      ('Barber Shop', 'Drakvägen 1',(SELECT id FROM city WHERE cityname = 'Gothenburg')),
      ('Håret', 'Mjällgatan 93',(SELECT id FROM city WHERE cityname = 'Stockholm' )),
      ('Kungsholmens Frisör', 'Saxgatan 93', (SELECT id FROM city WHERE cityname = 'Stockholm')),
-     ('Hair Lady', 'Odengatan 23',(SELECT id FROM city WHERE cityname = 'Stockholm'))`);
+     ('Hair Lady', 'Odengatan 23',(SELECT id FROM city WHERE cityname = 'Stockholm'))`
+    );
+
+    await sequelize.query(`
+     INSERT INTO "user" (username, password, email) VALUES ('Admin', 'admin123', 'admin@mail.com'), ('User1', 'password1', 'user1@mail.com'), 
+    ('User2', 'password2', 'user2@mail.com'), ('Hårfin', 'password3', 'owner_harfin@mail.com');;
+     `);
+
+    await sequelize.query(`
+    INSERT INTO review (fk_user_id, fk_company_id, title, description, rating) 
+    VALUES(2, 5, 'Helt okej', 'Man får vad man betalar för', 3), (3, 1, 'Hemsk', 'Förstörde mitt hår', 1)
+
+     `);
   } catch (error) {}
 };
 
