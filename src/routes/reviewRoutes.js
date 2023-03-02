@@ -7,16 +7,16 @@ const { isAuthenticated } = require("../middleware/authenticationMiddleware");
 
 const {
   createNewReview,
-  updateReviewByID, //DOESNT WORK?
-  deleteReviewById,
-  getReviewByID, //DOESNT WORK?
+  updateReviewByID,
+  deleteReviewByID,
+  getReviewByID,
   getAllReviews,
 } = require("../controller/reviewController");
 
 router.post("/", isAuthenticated, createNewReview);
-router.put("/", isAuthenticated, updateReviewById);
-router.delete("/", isAuthenticated, deleteReviewById);
-router.get("/", getReviewById);
+router.put("/", isAuthenticated, updateReviewByID);
+router.delete("/", isAuthenticated, deleteReviewByID);
+router.get("/", getReviewByID);
 router.get("/", getAllReviews);
 
 module.exports = router;
