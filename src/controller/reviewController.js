@@ -15,9 +15,10 @@ exports.createNewReview = async (req, res) => {
 };
 
 //uppdatera review via id
-exports.updateReviewById = async (req, res) => {
+exports.updateReviewByID = async (req, res) => {
   try {
-    return res.send("Update your review"); //scaffoldreturn
+    const reviewID = req.params.reviewID;
+    return res.send(`Update your review ${reviewID}`); //scaffoldreturn
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -27,9 +28,10 @@ exports.updateReviewById = async (req, res) => {
 };
 
 //radera review via id
-exports.deleteReviewById = async (req, res) => {
+exports.deleteReviewByID = async (req, res) => {
   try {
-    return res.send("Delete your review"); //scaffoldreturn
+    const reviewID = req.params.reviewID;
+    return res.send(`Delete your review ${reviewID}`); //scaffoldreturn
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -39,9 +41,10 @@ exports.deleteReviewById = async (req, res) => {
 };
 
 //hämta review via id
-exports.getReviewById = async (req, res) => {
+exports.getReviewByID = async (req, res) => {
   try {
-    return res.send("Collect review by id"); //scaffoldreturn
+    const reviewID = req.params.reviewID;
+    return res.send(`Collect review by id ${reviewID}`); //scaffoldreturn
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -53,6 +56,7 @@ exports.getReviewById = async (req, res) => {
 //hämta alla reviews
 exports.getAllReviews = async (req, res) => {
   try {
+    // här inne.
     return res.send("Collect all reviews"); //scaffoldreturn
   } catch (error) {
     console.error(error);

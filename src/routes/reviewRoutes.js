@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const { userRoles } = require("../constants/users"); //DOESNT WORK - table or userRoles?
-const { isAuthenticated } = require("../middleware/authenticationMiddleware");
 
 // const { UnauthenticatedError, UnauthorizedError } = require("../utils/errors"); - FUTURE.
 
@@ -13,10 +11,10 @@ const {
   getAllReviews,
 } = require("../controller/reviewController");
 
-router.post("/", isAuthenticated, createNewReview);
-router.put("/", isAuthenticated, updateReviewByID);
-router.delete("/", isAuthenticated, deleteReviewByID);
-router.get("/", getReviewByID);
 router.get("/", getAllReviews);
+router.post("/", createNewReview);
+router.put("/:reviewID", updateReviewByID);
+router.delete("/:reviewID", deleteReviewByID);
+router.get("/:reviewID", getReviewByID);
 
 module.exports = router;

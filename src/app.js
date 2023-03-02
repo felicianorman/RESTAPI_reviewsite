@@ -14,7 +14,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/v1/companies", companyRoutes);
-app.use("/api/v1/routes", reviewRoutes);
+app.use("/api/v1/reviews", reviewRoutes);
 
 const port = process.env.PORT || 3000;
 const run = async () => {
