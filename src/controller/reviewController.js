@@ -1,11 +1,11 @@
 const { NotFoundError, BadRequestError } = require("../utils/errors");
-const { sequelize } = require("../database/config");
-const { QueryTypes } = require("sequelize");
+const { sequelize } = require("../database/config"); //Varför hittar den ej?
+const { QueryTypes } = require("sequelize"); //Vad är detta för filväg i jämförelse med de ovan? Hur plockar den upp?
 
 //skapa ny review
 exports.createNewReview = async (req, res) => {
   try {
-    return res.send("Create new review"); //scaffoldreturn
+    return res.send("Create your review"); //scaffoldreturn
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -17,7 +17,7 @@ exports.createNewReview = async (req, res) => {
 //uppdatera review via id
 exports.updateReviewById = async (req, res) => {
   try {
-    return res.send("Update review"); //scaffoldreturn
+    return res.send("Update your review"); //scaffoldreturn
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -29,7 +29,7 @@ exports.updateReviewById = async (req, res) => {
 //radera review via id
 exports.deleteReviewById = async (req, res) => {
   try {
-    return res.send("Delete review"); //scaffoldreturn
+    return res.send("Delete your review"); //scaffoldreturn
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -41,7 +41,7 @@ exports.deleteReviewById = async (req, res) => {
 //hämta review via id
 exports.getReviewById = async (req, res) => {
   try {
-    return res.send("Get review by id"); //scaffoldreturn
+    return res.send("Collect review by id"); //scaffoldreturn
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -53,7 +53,7 @@ exports.getReviewById = async (req, res) => {
 //hämta alla reviews
 exports.getAllReviews = async (req, res) => {
   try {
-    return res.send("Get all reviews"); //scaffoldreturn
+    return res.send("Collect all reviews"); //scaffoldreturn
   } catch (error) {
     console.error(error);
     return res.status(500).json({

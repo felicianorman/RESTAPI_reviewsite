@@ -51,7 +51,7 @@ class ValidationError extends BadRequestError {
 }
 
 module.exports = {
-  catchErrors,
+  catchErrors, //VARFÖR ÄR DENNA GUL OCH DE ANDRA GRÖNA? :)
   NotFoundError,
   BadRequestError,
   UnauthenticatedError,
