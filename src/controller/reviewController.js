@@ -92,15 +92,7 @@ exports.getReviewByID = async (req, res) => {
   }
 };
 
-//hämta alla reviews
-exports.getAllReviews = async (req, res) => {
-  const [reviews, metadata] = await sequelize.query(`
-    SELECT * FROM reviews 
-    `);
-
-  return res.json(reviews);
-};
-
+//hämta alla reviews ***
 exports.getAllReviews = async (req, res) => {
   try {
     const [reviews, metadata] = await sequelize.query(`
