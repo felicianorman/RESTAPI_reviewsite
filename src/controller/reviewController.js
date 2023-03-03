@@ -2,7 +2,7 @@ const { NotFoundError, BadRequestError } = require("../utils/errors");
 const { sequelize } = require("../database/config"); //Varför hittar den ej?
 const { QueryTypes } = require("sequelize"); //Vad är detta för filväg i jämförelse med de ovan? Hur plockar den upp?
 
-//skapa ny review
+//skapa ny review ***
 exports.createNewReview = async (req, res) => {
   const { review_title, review_description, review_rating } = req.body;
   const hairId = req.params.hairId;
@@ -25,6 +25,7 @@ exports.createNewReview = async (req, res) => {
     }
   );
 
+  await sequelize.query(``);
   return res
     .setHeader(
       "Location",
@@ -46,16 +47,35 @@ exports.updateReviewByID = async (req, res) => {
   }
 };
 
-//radera review via id
-exports.deleteReviewByID = async (req, res) => {
-  try {
-    const reviewID = req.params.reviewID;
-    return res.send(`Delete your review ${reviewID}`); //scaffoldreturn
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      message: error.message,
-    });
+//radera review via id ***
+exports.deleteReviewById = async (req, res) => {
+  const reviewId = req.params.reviewid;
+  const userId = req.user.userId;
+  //console.log(reviewId);
+  //console.log(userId);
+  const [result_reviews] = await sequelize.query(
+    `SELECT * FROM review WHERE id = $reviewId;`,
+    {
+      bind: { reviewId: reviewId },
+      type: QueryTypes.SELECT,
+    }
+  );
+
+  if (!result_reviews)
+    throw new NotFoundError(
+      "There is no such review like the one you're asking for"
+    );
+  if (req.user.role == userRoles.ADMIN || userId == result_reviews.fk_user_id) {
+    await sequelize.query(
+      "DELETE FROM review WHERE id = $reviewId RETURNING *",
+      {
+        bind: { reviewId: reviewId },
+        type: QueryTypes.DELETE,
+      }
+    );
+    return res.sendStatus(204);
+  } else {
+    throw new UnauthorizedError("There's nothing to delete");
   }
 };
 
@@ -74,8 +94,18 @@ exports.getReviewByID = async (req, res) => {
 
 //hämta alla reviews
 exports.getAllReviews = async (req, res) => {
+  const [reviews, metadata] = await sequelize.query(`
+    SELECT * FROM reviews 
+    `);
+
+  return res.json(reviews);
+};
+
+exports.getAllReviews = async (req, res) => {
   try {
-    // här inne.
+    const [reviews, metadata] = await sequelize.query(`
+    SELECT * FROM reviews 
+    `);
     return res.send("Collect all reviews"); //scaffoldreturn
   } catch (error) {
     console.error(error);
