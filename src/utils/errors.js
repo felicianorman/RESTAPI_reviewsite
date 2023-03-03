@@ -15,7 +15,7 @@ class BadRequestError extends CustomAPIError {
   constructor(message) {
     super(message);
     this.statusCode = 400;
-    this.name = "BadReqiestError"; //KAN MAN SKRIVA VAD SOM HELST HÄR?
+    this.name = "BadRequestError"; //KAN MAN SKRIVA VAD SOM HELST HÄR?
   }
 }
 

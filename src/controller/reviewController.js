@@ -4,14 +4,33 @@ const { QueryTypes } = require("sequelize"); //Vad är detta för filväg i jäm
 
 //skapa ny review
 exports.createNewReview = async (req, res) => {
-  try {
-    return res.send("Create your review"); //scaffoldreturn
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      message: error.message,
-    });
-  }
+  const { review_title, review_description, review_rating } = req.body;
+  const hairId = req.params.hairId;
+  const userId = req.user.userId;
+
+  const [newReviewId] = await sequelize.query(
+    `
+      INSERT INTO reviews (review_title, review_description, review_rating, fk_user_id, fk_hair_id)
+      VALUES ($review_title, $review_description, $review_rating, $fk_user_id, $fk_hair_id);
+      `,
+    {
+      bind: {
+        review_title: review_title,
+        review_description: review_description,
+        review_rating: review_rating,
+        fk_user_id: userId,
+        fk_hair_id: hairId,
+      },
+      type: QueryTypes.INSERT,
+    }
+  );
+
+  return res
+    .setHeader(
+      "Location",
+      `${req.protocol}://${req.headers.host}/api/v1/reviews/${newReviewId.reviewId}`
+    )
+    .sendStatus(201);
 };
 
 //uppdatera review via id
