@@ -151,16 +151,27 @@ exports.deleteReviewById = async (req, res) => {
 };
 
 //hämta review via id
-exports.getReviewByID = async (req, res) => {
-  try {
-    const reviewID = req.params.reviewID;
-    return res.send(`Collect review by id ${reviewID}`); //scaffoldreturn
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      message: error.message,
-    });
-  }
+exports.getReviewById = async (req, res) => {
+  const userId = req.params.userId;
+
+  const [results, metadata] = await sequelize.query(
+    `
+  SELECT  review.id, review.comment, review.grade, review.fk_hairdresser_id AS hairdresser, user.user_name AS user, review.fk_user_id AS user_ID 
+  FROM review
+  JOIN user ON user.id = review.fk_user_id
+  WHERE review.fk_user_id = $userId
+    `,
+    {
+      bind: { userId },
+    }
+  );
+
+  if (!userId)
+    throw new NotFoundError(
+      "Tyvärr har denna kund inte skrivit någon recension än!"
+    );
+
+  return res.json(results);
 };
 
 //hämta alla reviews ***
