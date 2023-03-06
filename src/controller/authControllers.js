@@ -4,6 +4,8 @@ const { sequelize } = require("../database/config");
 const { QueryTypes } = require("sequelize");
 const { userRoles } = require("../constants/users");
 
+//lägg till admin/user role 
+
 exports.register = async (req, res) => {
   const { username, password, email } = req.body;
 
@@ -63,7 +65,7 @@ exports.login = async (req, res) => {
     username: user.username,
   };
 
-  const jwtToken = jwt.sign(jwtPayload, process.env.JWT_TOKEN, {
+  const jwtToken = jwt.sign(jwtPayload, process.env.JWT_SECRET, {
     expiresIn: "1h",
   });
 
