@@ -1,8 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const { sequelize } = require("./database/config.js");
-const companyRoutes = require("./routes/companyRoutes");
-const reviewRoutes = require("./routes/reviewRoutes");
+const apiRoutes = require('./routes')
 
 const app = express();
 
@@ -13,8 +12,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/v1/companies", companyRoutes);
-app.use("/api/v1/reviews", reviewRoutes);
+app.use("/api/v1", apiRoutes)
 
 const port = process.env.PORT || 3000;
 const run = async () => {

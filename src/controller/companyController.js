@@ -26,8 +26,3 @@ exports.getCompanyById = async (req, res) => {
     return res.json(results)
 };
 
-exports.addNewCompany = async (req, res) => {
-    const { name, adress, fk_city_id } = req.body
-
-    const [newCompanyId] = await sequelize.query(`INSERT INTO `)
-}
