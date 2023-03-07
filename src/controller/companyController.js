@@ -3,11 +3,62 @@ const { sequelize } = require('../database/config')
 const { userRoles } = require("../constants/users");
 const { UnauthorizedError, NotFoundError } = require("../utils/errors");
 
-
 exports.getAllCompanies = async (req, res) => {
-    const [companies, metadata] = await sequelize.query('SELECT * FROM company')
-    return res.json(companies)
-}
+	try {
+	  const limit = Number(req.query.limit || 10);
+	  const offset = Number(req.query.offset || 0);
+	  const city = req.query.city;
+  
+	  console.log(limit);
+  
+	  if (!city) {
+		const [companies, metadata] = await sequelize.query(
+		  `SELECT * FROM company ORDER by name ASC, fk_city_id ASC LIMIT $limit OFFSET $offset;`,
+		  {
+			bind: {
+			  limit: limit,
+			  offset: offset,
+			},
+		  }
+		);
+		if (!companies || !companies[0]) {
+		  throw new NotFoundError("sorry we can't find any companies");
+		}
+		return res.json({
+		  data: companies,
+		  metadata: {
+			limit: limit,
+			offset: offset,
+		  },
+		});
+	  } else {
+		const [companies, metadata] = await sequelize.query(
+		  `SELECT * FROM company 
+		  WHERE fk_city_id = (SELECT id FROM city WHERE UPPER(cityname)= UPPER(TRIM($cityName))) 
+		  ORDER BY name ASC 
+		  LIMIT $limit 
+		  OFFSET $offset;`,
+		  {
+			bind: {
+			  cityName: city,
+			  limit: limit,
+			  offset: offset,
+			},
+		  }
+		);
+
+		if (!companies || !companies[0]) {
+		  throw new NotFoundError(" sorry we have no companies listed in that city");
+		}
+		return res.json({
+		  data: companies,
+		});
+	  }
+	} catch (error) {
+	  console.error(error);
+	  return res.status(500).json({ message: error.message });
+	}
+  };
 
 exports.getCompanyById = async (req, res) => {
 	const companyId = req.params.companyId
@@ -52,6 +103,7 @@ exports.deleteCompanyById = async (req, res) => {
 	})
 
 	return res.sendStatus(204)
+	// lägg till att bara admin eller den som äger företaget, användaren som är kopplad och samma sak med update.
 }
 
 exports.createNewCompany = async (req, res) => {
