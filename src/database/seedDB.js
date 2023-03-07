@@ -3,8 +3,8 @@ const { sequelize } = require("./config");
 const seedCompaniesDb = async () => {
   try {
     //DROP table if exist
-    await sequelize.query("DROP TABLE IF EXISTS city;");
-    await sequelize.query("DROP TABLE IF EXISTS role;");
+    await sequelize.query(`DROP TABLE IF EXISTS city;`);
+    await sequelize.query(`DROP TABLE IF EXISTS role;`);
     await sequelize.query(`DROP TABLE IF EXISTS user;`);
     await sequelize.query(`DROP TABLE IF EXISTS review;`);
     await sequelize.query(`DROP TABLE IF EXISTS company;`);
@@ -71,8 +71,9 @@ const seedCompaniesDb = async () => {
     );
 
     await sequelize.query(`
-     INSERT INTO "user" (username, password, email) VALUES ('Admin', 'admin123', 'admin@mail.com'), ('User1', 'password1', 'user1@mail.com'), 
-    ('User2', 'password2', 'user2@mail.com'), ('Hårfin', 'password3', 'owner_harfin@mail.com');;
+    INSERT INTO "user" (username, email, password, fk_user_role_id) VALUES('Admin', 'admin@hairdresser.com', 'admin123', 'ADMIN'), ('User1', 'password1', 'user1@mail.com', 'USER), ('User2', 'password2', 'user2@mail.com', 'USER'), ('Hårfin', 'hairdresser1', 'harfin@harfin.se', 'OWNER')
+
+    )
      `);
 
     await sequelize.query(`
