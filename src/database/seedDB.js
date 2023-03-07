@@ -3,8 +3,8 @@ const { sequelize } = require("./config");
 const seedCompaniesDb = async () => {
   try {
     //DROP table if exist
-    await sequelize.query('DROP TABLE IF EXISTS city;');
-    await sequelize.query('DROP TABLE IF EXISTS role;');
+    await sequelize.query("DROP TABLE IF EXISTS city;");
+    await sequelize.query("DROP TABLE IF EXISTS role;");
     await sequelize.query(`DROP TABLE IF EXISTS user;`);
     await sequelize.query(`DROP TABLE IF EXISTS review;`);
     await sequelize.query(`DROP TABLE IF EXISTS company;`);
@@ -57,16 +57,17 @@ const seedCompaniesDb = async () => {
     );
 
     await sequelize.query(
-      `INSERT INTO company (name, adress, fk_city_id) VALUES
-      ('Sax och Fön', 'Drottninggatan 105', (SELECT id FROM city WHERE cityname = 'Stockholm')),
-      ('Hårfin', 'Salonggatan 1',(SELECT id FROM city WHERE cityname = 'Stockholm')),
-      ('Peach Stockholm', 'Vasagatan 12',(SELECT id FROM city WHERE cityname = 'Stockholm')),
-      ('Snap Frisör', 'Odyssen väg 7',(SELECT id FROM city WHERE cityname = 'Halmstad')),
-     ('Haircare', 'Frisörgatan 102',(SELECT id FROM city WHERE cityname = 'Halmstad')),
-     ('Barber Shop', 'Drakvägen 1',(SELECT id FROM city WHERE cityname = 'Gothenburg')),
-     ('Håret', 'Mjällgatan 93',(SELECT id FROM city WHERE cityname = 'Stockholm' )),
-     ('Kungsholmens Frisör', 'Saxgatan 93', (SELECT id FROM city WHERE cityname = 'Stockholm')),
-     ('Hair Lady', 'Odengatan 23',(SELECT id FROM city WHERE cityname = 'Stockholm'))`
+      `INSERT INTO company (name, adress, fk_city_id, fk_user_role_id) VALUES
+      ('Sax och Fön', 'Drottninggatan 105', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
+      ('Hårfin', 'Salonggatan 1', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
+('Peach Stockholm', 'Vasagatan 12', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
+('Hårfin', 'Salonggatan 1', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
+('Snap Frisör', 'Odyssens väg  7', (SELECT id FROM city WHERE cityname = 'Halmstad'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
+('Haircare', 'Frisörgatan 102', (SELECT id FROM city WHERE cityname = 'Halmstad'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
+('Barber Shop', 'Drakvägen 1', (SELECT id FROM city WHERE cityname = 'Göteborg'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
+('Håret', 'Mjällgatan 93', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
+('Kungsholmens Frisör', 'Saxgatan 93', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
+('Hair Lady', 'Odengatan 93', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER'))`
     );
 
     await sequelize.query(`
@@ -79,6 +80,10 @@ const seedCompaniesDb = async () => {
     VALUES(2, 5, 'Helt okej', 'Man får vad man betalar för', 3), (3, 1, 'Hemsk', 'Förstörde mitt hår', 1)
 
      `);
+
+    await sequelize.query(
+      `INSERT INTO "role" (user_role) VALUES ('ADMIN'), ('USER'), ('OWNER');`
+    );
   } catch (error) {}
 };
 
