@@ -3,8 +3,8 @@ const { sequelize } = require("./config");
 const seedCompaniesDb = async () => {
   try {
     //DROP table if exist
-    await sequelize.query(`DROP TABLE IF EXISTS city;`);
-    await sequelize.query(`DROP TABLE IF EXISTS role;`);
+    await sequelize.query('DROP TABLE IF EXISTS city;');
+    await sequelize.query('DROP TABLE IF EXISTS role;');
     await sequelize.query(`DROP TABLE IF EXISTS user;`);
     await sequelize.query(`DROP TABLE IF EXISTS review;`);
     await sequelize.query(`DROP TABLE IF EXISTS company;`);
@@ -14,7 +14,9 @@ const seedCompaniesDb = async () => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT,
             password TEXT,
-            email TEXT
+            email TEXT,
+            fk_user_role_id TEXT,
+            FOREIGN KEY(fk_user_role_id) REFERENCES role(id)
         )`),
       await sequelize.query(`
             CREATE TABLE IF NOT EXISTS city (
@@ -27,13 +29,15 @@ const seedCompaniesDb = async () => {
             name TEXT,
             adress TEXT,
             fk_city_id TEXT ,
+            fk_user_role_id TEXT,
             FOREIGN KEY(fk_city_id) REFERENCES city(id)
+            FOREIGN KEY(fk_user_role_id) REFERENCES role(id)
+
         )`),
       await sequelize.query(`
         CREATE TABLE IF NOT EXISTS role (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            fk_user_role_id TEXT,
-            FOREIGN KEY(fk_user_role_id) REFERENCES user(id)
+            user_role TEXT
         )`),
       await sequelize.query(`
         CREATE TABLE IF NOT EXISTS review (

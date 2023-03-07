@@ -178,7 +178,7 @@ exports.getReviewById = async (req, res) => {
 exports.getAllReviews = async (req, res) => {
   try {
     const [reviews, metadata] = await sequelize.query(`
-    SELECT * FROM reviews 
+    SELECT * FROM review
     `);
     return res.send("Collect all reviews"); //scaffoldreturn
   } catch (error) {
@@ -188,3 +188,5 @@ exports.getAllReviews = async (req, res) => {
     });
   }
 };
+
+
