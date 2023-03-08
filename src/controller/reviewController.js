@@ -38,7 +38,7 @@ exports.createNewReview = async (req, res) => {
 exports.updateReview = async (req, res) => {
   const reviewId = req.params.reviewId;
 
-  const { mainText, rating } = req.body;
+  const { descriptionText, rating } = req.body;
   let token;
   const authHeader = req.headers.authorization;
 
@@ -70,11 +70,11 @@ exports.updateReview = async (req, res) => {
     throw new UnauthorizedError("Du kan inte uppdatera någon annans review");
   }
 
-  if (!mainText && !rating) {
+  if (!descriptionText && !rating) {
     throw new BadRequestError("You need to add a description and/or a rating!");
   }
 
-  if (!mainText && rating) {
+  if (!descriptionText && rating) {
     const [updateReview, metadata] = await sequelize.query(
       `UPDATE review SET rating = $rating
       WHERE id = $reviewId RETURNING *;`,
@@ -87,7 +87,7 @@ exports.updateReview = async (req, res) => {
       }
     );
   } else {
-    if (mainText && !rating) {
+    if (descriptionText && !rating) {
       const [updateReview, metadata] = await sequelize.query(
         //ändrat till description nedanför
         `UPDATE review SET description = $description
@@ -95,7 +95,7 @@ exports.updateReview = async (req, res) => {
         {
           bind: {
             reviewId: reviewId,
-            description: mainText, //ändrat till description
+            description: descriptionText, //ändrat till description
           },
           type: QueryTypes.UPDATE,
         }
@@ -107,7 +107,7 @@ exports.updateReview = async (req, res) => {
         {
           bind: {
             reviewId: reviewId,
-            description: mainText,
+            description: descriptionText,
             rating: rating,
           },
           type: QueryTypes.UPDATE,
