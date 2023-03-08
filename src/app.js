@@ -1,7 +1,12 @@
 require("dotenv").config();
 const express = require("express");
 const { sequelize } = require("./database/config.js");
-const apiRoutes = require('./routes')
+const apiRoutes = require("./routes");
+
+const cors = require("cors");
+const xss = require("xss-clean");
+const { rateLimit } = require("express-rate-limit");
+const { default: helmet } = require("helmet");
 
 const app = express();
 
@@ -12,7 +17,24 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/v1", apiRoutes)
+app.use(xss());
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 60,
+  })
+);
+
+app.use(helmet());
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "PUT", "PATCH", "DELETE", "POST"],
+  })
+);
+
+app.use("/api/v1", apiRoutes);
 
 const port = process.env.PORT || 3000;
 const run = async () => {
@@ -21,7 +43,6 @@ const run = async () => {
 
     app.listen(port, () => {
       console.log(`Server is listening on http://localhost:${port}`);
-      //FRÅGA PETTER om node
     });
   } catch (error) {
     console.error(error);
