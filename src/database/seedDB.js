@@ -1,4 +1,5 @@
 const { sequelize } = require("./config");
+const bcrypt = require("bcrypt");
 
 const seedCompaniesDb = async () => {
   try {
@@ -8,8 +9,6 @@ const seedCompaniesDb = async () => {
     await sequelize.query(`DROP TABLE IF EXISTS user;`);
     await sequelize.query(`DROP TABLE IF EXISTS city;`);
     await sequelize.query(`DROP TABLE IF EXISTS role;`);
-
-
 
     await sequelize.query(`
         CREATE TABLE IF NOT EXISTS user (
@@ -63,38 +62,40 @@ const seedCompaniesDb = async () => {
       `INSERT INTO "role" (user_role) VALUES ('ADMIN'), ('USER'), ('OWNER');`
     );
 
+    const salt = await bcrypt.genSalt(10)
+    const password = await bcrypt.hash('password96', salt)
+
     await sequelize.query(`
     INSERT INTO "user" (username, email, password, fk_user_role_id) VALUES
-    ('Admin', 'admin@hairdresser.com', 'admin123', (SELECT id FROM "role" WHERE user_role = 'ADMIN')), 
-    ('User1', 'password1', 'user1@mail.com', (SELECT id FROM "role" WHERE user_role = 'USER')), 
-    ('User2', 'password2', 'user2@mail.com', (SELECT id FROM "role" WHERE user_role = 'USER')), 
-    ('Hårfin', 'hairdresser1', 'harfin@harfin.se', (SELECT id FROM "role" WHERE user_role = 'OWNER'))
+    ('Admin', 'admin@hairdresser.com', '${password}', (SELECT id FROM "role" WHERE id = 1)), 
+    ('User1', 'user@mail.com', '${password}', (SELECT id FROM "role" WHERE id = 2)), 
+    ('User2', 'user@mail.com', '${password}', (SELECT id FROM "role" WHERE id = 2)), 
+    ('Owner1', 'comapny1@hairdresser.se', '${password}', (SELECT id FROM "role" WHERE id = 3)),
+    ('Owner2', 'comapny2@hairdresser.se', '${password}', (SELECT id FROM "role" WHERE id = 3)),
+    ('Owner3', 'comapny3@hairdresser.se', '${password}', (SELECT id FROM "role" WHERE id = 3))
      `);
 
     await sequelize.query(
-      `INSERT INTO company (name, adress, fk_city_id, fk_user_role_id /*, fk_user_id*/) VALUES
-      ('Sax och Fön', 'Drottninggatan 105', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), ()),
-      ('Hårfin', 'Salonggatan 1', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
-('Peach Stockholm', 'Vasagatan 12', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
-('Hårfin', 'Salonggatan 1', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
-('Snap Frisör', 'Odyssens väg  7', (SELECT id FROM city WHERE cityname = 'Halmstad'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
-('Haircare', 'Frisörgatan 102', (SELECT id FROM city WHERE cityname = 'Halmstad'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
-('Barber Shop', 'Drakvägen 1', (SELECT id FROM city WHERE cityname = 'Gothenburg'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
-('Håret', 'Mjällgatan 93', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
-('Kungsholmens Frisör', 'Saxgatan 93', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER')),
-('Hair Lady', 'Odengatan 93', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER'))`
+      `INSERT INTO company (name, adress, fk_city_id, fk_user_role_id, fk_user_id) VALUES
+      ('Sax och Fön', 'Drottninggatan 105', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 4)),
+      ('Hårfin', 'Salonggatan 1', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 5)),
+      ('Peach Stockholm', 'Vasagatan 12', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 6)),
+      ('Hårfin', 'Salonggatan 1', (SELECT id FROM city WHERE cityname = 'Gothenburg'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 4)),
+      ('Snap Frisör', 'Odyssens väg  7', (SELECT id FROM city WHERE cityname = 'Halmstad'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 5)),
+      ('Haircare', 'Frisörgatan 102', (SELECT id FROM city WHERE cityname = 'Halmstad'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 6)),
+      ('Barber Shop', 'Drakvägen 1', (SELECT id FROM city WHERE cityname = 'Gothenburg'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 4)),
+      ('Håret', 'Mjällgatan 93', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 6)),
+      ('Frisör Kungen', 'Saxgatan 93', (SELECT id FROM city WHERE cityname = 'Gothenburg'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 5)),
+      ('Hair Lady', 'Slinggatan 81', (SELECT id FROM city WHERE cityname = 'Halmstad'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 4))`
     );
-
 
     await sequelize.query(`
     INSERT INTO review (fk_user_id, fk_company_id, title, description, rating) 
     VALUES(2, 5, 'Helt okej', 'Man får vad man betalar för', 3), (3, 1, 'Hemsk', 'Förstörde mitt hår', 1)
 
      `);
-
-   
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
 };
 

@@ -1,10 +1,12 @@
 const { userRoles } = require("../constants/users");
 const { sequelize } = require("../database/config");
 const { QueryTypes } = require("sequelize");
+const { UnauthorizedError, NotFoundError } = require("../utils/errors");
 
 exports.getAllUsers = async (req, res) => {
+  //lägg till limit
   const [users, metadata] = await sequelize.query(
-    'SELECT id, username FROM "user";'
+    `SELECT id, username FROM "user";`
   );
   return res.json(users);
 };
@@ -20,7 +22,7 @@ exports.getUserById = async (req, res) => {
     }
   );
 
-  if (!user) return new Error("Den användaren finns inte");
+  if (!user) return new NotFoundError;
 
   return res.json(user);
 };
@@ -29,12 +31,17 @@ exports.getUserById = async (req, res) => {
 exports.deleteUserById = async (req, res) => {
   const userId = req.params.userId;
 
-  const [results, metadata] = await sequelize.query(
-    "DELETE FROM user WHERE id = $userId RETURNING *",
-    {
-      bind: { userId },
-    }
-  );
+  // if (
+  //   userId != req.user.userId &&
+  //   req.user.fk_user_role_id !== userRoles.ADMIN
+  // ) {
+  //   throw new UnauthorizedError('You do not ha')
+  // }
 
-  return res.sendStatus(204);
+  const [user, metadata] = await sequelize.query('DELETE FROM user WHERE id = $userId;', 
+  {
+    bind: { userId: userId }
+  } )
+
+  return res.sendStatus(204)
 };

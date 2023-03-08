@@ -5,7 +5,7 @@ exports.registerSchema = [
 	body('password')
 		.not()
 		.isEmpty()
-		.isLength({ min: 8 })
+		.isLength({ min: 6 })
 		.withMessage('You must provide a password that is at least 8 characters long'),
 ]
 
@@ -22,8 +22,14 @@ exports.companySchema = [
   ];
 
 
+<<<<<<< HEAD
 
 
 //validering för update, behövs inte not empty då
 //validering för skapa company
 //validering för delete att radera
+=======
+//validering för update, behövs inte not empty
+//validering för skapa
+//validering för delete vem som har tillgång att radera
+>>>>>>> c3a2c77a982361d4eced9f7319b4b02928949685

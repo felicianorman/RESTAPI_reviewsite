@@ -1,11 +1,12 @@
 const express = require('express')
 const router = express.Router()
+const { isAuthenticated, authorizeRoles} = require("../middleware/authenticationMiddleware");
+const { getAllUsers, getUserById, deleteUserById } = require('../controller/userControllers');
+const { userRoles } = require('../constants/users');
 
-const { getAllUsers, getUserById, deleteUserById } = require('../controller/userControllers')
-
-router.get('/', getAllUsers)
+router.get('/', isAuthenticated, authorizeRoles(userRoles.ADMIN) , getAllUsers)
 router.get('/:userId', getUserById)
-router.delete('/:userId', deleteUserById)
+router.delete('/:userId', isAuthenticated, deleteUserById)
 
 
 module.exports = router
