@@ -1,5 +1,5 @@
 const { NotFoundError, BadRequestError } = require("../utils/errors");
-const { sequelize } = require("../database/config"); //Varför hittar den ej?
+const { sequelize } = require("../database/config");
 const { QueryTypes } = require("sequelize"); //Vad är detta för filväg i jämförelse med de ovan? Hur plockar den upp?
 
 //skapa ny review ***
@@ -56,7 +56,7 @@ exports.updateReview = async (req, res) => {
   console.log(role);
 
   //hämta reviewen via DB
-  const [reviewMatch, metadata] = await sequelize.query(
+  const [reviewPickUp, metadata] = await sequelize.query(
     `SELECT fk_user_id FROM review WHERE ID = $reviewId;`,
     {
       bind: {
@@ -66,12 +66,14 @@ exports.updateReview = async (req, res) => {
     }
   );
 
-  if (reviewMatch.fk_user_id !== userId || role !== userRoles.ADMIN) {
+  if (reviewPickUp.fk_user_id !== userId || role !== userRoles.ADMIN) {
     throw new UnauthorizedError("Du kan inte uppdatera någon annans review");
   }
 
   if (!descriptionText && !rating) {
-    throw new BadRequestError("You need to add a description and/or a rating!");
+    throw new BadRequestError(
+      "Du måste lägga till en recension och/eller ett betyg"
+    );
   }
 
   if (!descriptionText && rating) {
@@ -89,13 +91,12 @@ exports.updateReview = async (req, res) => {
   } else {
     if (descriptionText && !rating) {
       const [updateReview, metadata] = await sequelize.query(
-        //ändrat till description nedanför
         `UPDATE review SET description = $description
         WHERE id = $reviewId RETURNING *;`,
         {
           bind: {
             reviewId: reviewId,
-            description: descriptionText, //ändrat till description
+            description: descriptionText,
           },
           type: QueryTypes.UPDATE,
         }
@@ -133,9 +134,7 @@ exports.deleteReviewById = async (req, res) => {
   );
 
   if (!result_reviews)
-    throw new NotFoundError(
-      "There is no such review like the one you're asking for"
-    );
+    throw new NotFoundError("Den recension som du söker finns ej");
 
   if (req.user.role == userRoles.ADMIN || userId == result_reviews.fk_user_id) {
     await sequelize.query(
@@ -147,17 +146,17 @@ exports.deleteReviewById = async (req, res) => {
     );
     return res.sendStatus(204);
   } else {
-    throw new UnauthorizedError("There's nothing to delete");
+    throw new UnauthorizedError("Det finns ingenting att radera här");
   }
 };
 
-//hämta review via id
+//hämta review via id ------------------------------------------------ FRÅGA PETTER OM HJÄLP
 exports.getReviewById = async (req, res) => {
   const userId = req.params.userId;
 
-  const [reviews, metadata] = await sequelize.query(
+  const [review, metadata] = await sequelize.query(
     `
-  SELECT  review.id, review.comment, review.grade, review.fk_hairdresser_id AS hairdresser, user.user_name AS user, review.fk_user_id AS user_ID 
+  SELECT  review.id, review.title, review.rating, review.fk_hairdresser_id AS hairdresser, user.user_name AS user, review.fk_user_id AS user_ID 
   FROM review
   JOIN user ON user.id = review.fk_user_id
   WHERE review.fk_user_id = $userId
@@ -167,21 +166,21 @@ exports.getReviewById = async (req, res) => {
     }
   );
 
-  if (!reviews)
+  if (!review)
     throw new NotFoundError(
       "Tyvärr har denna kund inte skrivit någon recension än!"
     );
 
-  return res.json(reviews);
+  return res.json(review);
 };
 
 //hämta alla reviews ***
 exports.getAllReviews = async (req, res) => {
   try {
-    const [reviews, metadata] = await sequelize.query(`
+    const [review, metadata] = await sequelize.query(`
     SELECT * FROM review
     `);
-    return res.send("Collect all reviews"); //scaffoldreturn
+    return res.send("Hämta alla recensioner"); //scaffoldreturn
   } catch (error) {
     console.error(error);
     return res.status(500).json({
