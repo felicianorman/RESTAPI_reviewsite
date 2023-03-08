@@ -10,7 +10,7 @@ exports.createNewReview = async (req, res) => {
 
   const [newReviewId] = await sequelize.query(
     `
-      INSERT INTO reviews (review_title, review_description, review_rating, fk_user_id, fk_hair_id)
+      INSERT INTO review (title, description, rating, fk_user_id, fk_company_id)
       VALUES ($review_title, $review_description, $review_rating, $fk_user_id, $fk_hair_id);
       `,
     {
@@ -57,10 +57,10 @@ exports.updateReview = async (req, res) => {
 
   //hämta reviewen via DB
   const [reviewMatch, metadata] = await sequelize.query(
-    `SELECT fk_user_id FROM review WHERE ID = $reviewID;`,
+    `SELECT fk_user_id FROM review WHERE ID = $reviewId;`,
     {
       bind: {
-        reviewId: reviewID,
+        reviewId: reviewId,
       },
       type: QueryTypes.SELECT,
     }
@@ -71,7 +71,7 @@ exports.updateReview = async (req, res) => {
   }
 
   if (!mainText && !rating) {
-    throw new BadRequestError("You need to add a mainText and/or a rating!");
+    throw new BadRequestError("You need to add a description and/or a rating!");
   }
 
   if (!mainText && rating) {
@@ -80,7 +80,7 @@ exports.updateReview = async (req, res) => {
       WHERE id = $reviewId RETURNING *;`,
       {
         bind: {
-          reviewId: reviewID,
+          reviewId: reviewId,
           rating: rating,
         },
         type: QueryTypes.UPDATE,
@@ -89,24 +89,25 @@ exports.updateReview = async (req, res) => {
   } else {
     if (mainText && !rating) {
       const [updateReview, metadata] = await sequelize.query(
-        `UPDATE review SET mainText = $mainText
+        //ändrat till description nedanför
+        `UPDATE review SET description = $description
         WHERE id = $reviewId RETURNING *;`,
         {
           bind: {
-            reviewID: reviewID,
-            mainText: mainText,
+            reviewId: reviewId,
+            description: mainText, //ändrat till description
           },
           type: QueryTypes.UPDATE,
         }
       );
     } else {
       const [updateReview, metadata] = await sequelize.query(
-        `UPDATE review SET mainText = $mainText, rating = $rating
+        `UPDATE review SET description = $description, rating = $rating
         WHERE id = $reviewId RETURNING *;`,
         {
           bind: {
-            reviewID: reviewID,
-            mainText: mainText,
+            reviewId: reviewId,
+            description: mainText,
             rating: rating,
           },
           type: QueryTypes.UPDATE,
@@ -122,6 +123,7 @@ exports.updateReview = async (req, res) => {
 exports.deleteReviewById = async (req, res) => {
   const reviewId = req.params.reviewid;
   const userId = req.user.userId;
+
   const [result_reviews] = await sequelize.query(
     `SELECT * FROM review WHERE id = $reviewId;`,
     {
@@ -134,6 +136,7 @@ exports.deleteReviewById = async (req, res) => {
     throw new NotFoundError(
       "There is no such review like the one you're asking for"
     );
+
   if (req.user.role == userRoles.ADMIN || userId == result_reviews.fk_user_id) {
     await sequelize.query(
       "DELETE FROM review WHERE id = $reviewId RETURNING *",
@@ -152,7 +155,7 @@ exports.deleteReviewById = async (req, res) => {
 exports.getReviewById = async (req, res) => {
   const userId = req.params.userId;
 
-  const [results, metadata] = await sequelize.query(
+  const [reviews, metadata] = await sequelize.query(
     `
   SELECT  review.id, review.comment, review.grade, review.fk_hairdresser_id AS hairdresser, user.user_name AS user, review.fk_user_id AS user_ID 
   FROM review
@@ -160,16 +163,16 @@ exports.getReviewById = async (req, res) => {
   WHERE review.fk_user_id = $userId
     `,
     {
-      bind: { userId },
+      bind: { userId: userId },
     }
   );
 
-  if (!userId)
+  if (!reviews)
     throw new NotFoundError(
       "Tyvärr har denna kund inte skrivit någon recension än!"
     );
 
-  return res.json(results);
+  return res.json(reviews);
 };
 
 //hämta alla reviews ***
