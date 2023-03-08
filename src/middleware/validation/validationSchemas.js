@@ -10,13 +10,20 @@ exports.registerSchema = [
 ]
 
 exports.loginSchema = [
-	body('email').isEmail().withMessage('You must provide a valid email address'),
-	body('password').not().isEmpty().withMessage('You must provide a password'),
-]
+	body("username").not().isEmpty().withMessage("You must provide a username"),
+	body("password").not().isEmpty().withMessage("You must provide a password"),
+  ];
+
+exports.companySchema = [
+	body("name")
+	  .not()
+	  .isEmpty()
+	  .withMessage("You must provide a company name"),
+  ];
 
 
 
 
-//validering för update, behövs inte not empty
-//validering för skapa
-//validering för delete vem som har tillgång att radera
+//validering för update, behövs inte not empty då
+//validering för skapa company
+//validering för delete att radera
