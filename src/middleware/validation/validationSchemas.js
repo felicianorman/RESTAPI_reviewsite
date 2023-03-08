@@ -12,12 +12,12 @@ exports.registerSchema = [
 exports.loginSchema = [
 	body("username").not().isEmpty().withMessage("You must provide a username"),
 	body("password").not().isEmpty().withMessage("You must provide a password"),
-  ];
+  ]
 
 exports.companySchema = [
 	body('name')
 	  .not()
 	  .isEmpty()
 	  .withMessage('You must provide a company name'),
-  ];
+  ]
 
