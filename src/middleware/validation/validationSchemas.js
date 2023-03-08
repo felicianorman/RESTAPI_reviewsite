@@ -25,3 +25,6 @@ exports.companySchema = [
 //validering för update, behövs inte not empty då
 //validering för skapa company
 //validering för delete att radera
+//validering för update, behövs inte not empty
+//validering för skapa
+//validering för delete vem som har tillgång att radera
