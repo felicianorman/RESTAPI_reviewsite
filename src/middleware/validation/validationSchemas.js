@@ -18,6 +18,8 @@ exports.companySchema = [
 	body('name')
 	  .not()
 	  .isEmpty()
+	  .isLength({min:5})
 	  .withMessage('You must provide a company name'),
+	  
   ]
 
