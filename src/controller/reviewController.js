@@ -122,8 +122,6 @@ exports.updateReview = async (req, res) => {
 exports.deleteReviewById = async (req, res) => {
   const reviewId = req.params.reviewid;
   const userId = req.user.userId;
-  //console.log(reviewId);
-  //console.log(userId);
   const [result_reviews] = await sequelize.query(
     `SELECT * FROM review WHERE id = $reviewId;`,
     {
@@ -188,5 +186,3 @@ exports.getAllReviews = async (req, res) => {
     });
   }
 };
-
-
