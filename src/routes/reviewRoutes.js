@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-// const { UnauthenticatedError, UnauthorizedError } = require("../utils/errors"); - FUTURE.
+const { UnauthenticatedError, UnauthorizedError } = require("../utils/errors");
 
 const {
   createNewReview,
-  updateReviewByID,
+  updateReview,
   deleteReviewByID,
   getReviewByID,
   getAllReviews,
@@ -13,8 +13,8 @@ const {
 
 router.get("/", getAllReviews);
 router.post("/", createNewReview);
-// router.put("/:reviewID", updateReviewByID);
-// router.delete("/:reviewID", deleteReviewByID);
-// router.get("/:reviewID", getReviewByID);
+router.put("/:reviewID", updateReview);
+router.delete("/:reviewID", deleteReviewByID);
+router.get("/:reviewID", getReviewByID);
 
 module.exports = router;
