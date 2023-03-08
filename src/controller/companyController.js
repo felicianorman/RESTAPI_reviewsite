@@ -77,7 +77,6 @@ exports.getCompanyById = async (req, res) => {
     
 	if (!company) throw new Error ("That company does not exist");
 
-	// Send back user info
 	return res.json(company);
 }
 
