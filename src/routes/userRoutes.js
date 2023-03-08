@@ -4,9 +4,9 @@ const { isAuthenticated, authorizeRoles} = require("../middleware/authentication
 const { getAllUsers, getUserById, deleteUserById } = require('../controller/userControllers');
 const { userRoles } = require('../constants/users');
 
-router.get('/', isAuthenticated, authorizeRoles(userRoles.ADMIN) ,getAllUsers)
+router.get('/', isAuthenticated, authorizeRoles(userRoles.ADMIN) , getAllUsers)
 router.get('/:userId', getUserById)
-router.delete('/:userId', isAuthenticated, authorizeRoles(userRoles.ADMIN, userRoles.USER) ,deleteUserById)
+router.delete('/:userId', isAuthenticated, deleteUserById)
 
 
 module.exports = router

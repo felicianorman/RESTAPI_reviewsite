@@ -5,18 +5,21 @@ exports.registerSchema = [
 	body('password')
 		.not()
 		.isEmpty()
-		.isLength({ min: 8 })
+		.isLength({ min: 6 })
 		.withMessage('You must provide a password that is at least 8 characters long'),
 ]
 
 exports.loginSchema = [
-	body('email').isEmail().withMessage('You must provide a valid email address'),
-	body('password').not().isEmpty().withMessage('You must provide a password'),
-]
+	body("username").not().isEmpty().withMessage("You must provide a username"),
+	body("password").not().isEmpty().withMessage("You must provide a password"),
+  ]
 
+exports.companySchema = [
+	body('name')
+	  .not()
+	  .isEmpty()
+	  .isLength({min:5})
+	  .withMessage('You must provide a company name'),
+	  
+  ]
 
-
-
-//validering för update, behövs inte not empty
-//validering för skapa
-//validering för delete vem som har tillgång att radera
