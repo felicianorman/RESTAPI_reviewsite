@@ -21,9 +21,3 @@ exports.companySchema = [
 	  .withMessage('You must provide a company name'),
   ];
 
-<<<<<<< HEAD
-=======
-//validering för update, behövs inte not empty
-//validering för skapa
-//validering för delete vem som har tillgång att radera
->>>>>>> c3a2c77a982361d4eced9f7319b4b02928949685
