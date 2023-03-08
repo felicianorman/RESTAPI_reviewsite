@@ -1,7 +1,7 @@
 const { userRoles } = require("../constants/users");
 const { sequelize } = require("../database/config");
 const { QueryTypes } = require("sequelize");
-const { UnauthorizedError } = require("../utils/errors");
+const { UnauthorizedError, NotFoundError } = require("../utils/errors");
 
 exports.getAllUsers = async (req, res) => {
   //lägg till limit
@@ -22,7 +22,7 @@ exports.getUserById = async (req, res) => {
     }
   );
 
-  if (!user) return new Error("Den användaren finns inte");
+  if (!user) return new NotFoundError;
 
   return res.json(user);
 };
