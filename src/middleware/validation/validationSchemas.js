@@ -18,14 +18,6 @@ exports.loginSchema = [
 
 
 exports.companySchema = [
-<<<<<<< HEAD
-  body("name")
-    .not()
-    .isEmpty()
-    .isLength({ min: 5 })
-    .withMessage("You must provide a company name"),
-];
-=======
 	body('name')
 	  .not()
 	  .isEmpty()
@@ -46,4 +38,3 @@ exports.companySchema = [
 	
   ]
 
->>>>>>> b7e8d4ed1930079d3f2cfee24b9bbe8c9da57d8c

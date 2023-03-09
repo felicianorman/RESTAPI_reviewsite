@@ -56,14 +56,12 @@ exports.login = async (req, res) => {
       }
     );
 
-    if (!user) return new UnauthenticatedError("Invalid credentials");
-
     const checkPassword = await bcrypt.compare(
       candidatePassword,
       user.password
     );
 
-    if (!checkPassword) return new UnauthenticatedError("Invalid credentials");
+    if (!checkPassword) throw new UnauthenticatedError("Invalid credentials");
 
     const jwtPayload = {
       userId: user.id,
@@ -80,7 +78,9 @@ exports.login = async (req, res) => {
       token: jwtToken,
       user: jwtPayload,
     });
+
   } catch (error) {
     console.log("You must input valid credentials");
+    return res.status(error.statusCode || 500).json(error.message)
   }
 };
