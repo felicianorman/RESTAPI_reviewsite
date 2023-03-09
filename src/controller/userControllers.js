@@ -51,10 +51,6 @@ exports.deleteUserById = async (req, res) => {
   try {
     const userId = req.params.userId;
 
-    if(userId != req.user?.userId && req.user.user_role !== userRoles.ADMIN) {
-      throw new UnauthorizedError("Unauthorized Access");
-    }
-
     const [user, metadata] = await sequelize.query(
       "DELETE FROM user WHERE id = $userId;",
       {
@@ -63,7 +59,7 @@ exports.deleteUserById = async (req, res) => {
     );
 
     return res.sendStatus(204);
-    
+
   } catch (error) {
     return res.status(error.statusCode || 500).json(error.message);
   }
