@@ -106,14 +106,16 @@ exports.deleteCompanyById = async (req, res) => {
 }
 
 exports.createNewCompany = async (req, res) => {
-	const { name, adress, fk_city_id, fk_user_role_id} = req.body
+	const { name, adress, fk_city_id, fk_user_id} = req.body
 
-	const [newCompanyId] = await sequelize.query('INSERT INTO company (name, adress, fk_city_id, fk_user_role_id) VALUES ($name, $adress, $fk_city_id, $fk_user_role_id);', {
+	const [newCompanyId] = await sequelize.query('INSERT INTO company (name, adress, fk_city_id, fk_user_id) VALUES ($name, $adress, $fk_city_id, $fk_user_id);', {
 		bind: { 
         name: name,
         adress: adress,
         fk_city_id: fk_city_id,
-        fk_user_role_id: fk_user_role_id
+        fk_user_id: fk_user_id,
+
+
         
      },
 		type: QueryTypes.INSERT, 
