@@ -59,44 +59,57 @@ exports.getAllCompanies = async (req, res) => {
   };
 
 exports.getCompanyById = async (req, res) => {
-	const companyId = req.params.companyId
+	try {
+		const companyId = req.params.companyId
 
-	const [company, metadata] = await sequelize.query(
-		`
-			SELECT id, name, adress, fk_city_id
-			FROM company
-			WHERE id = $companyId;
-		`,
-		{
-			bind: { companyId: companyId },
-		}
-	)
-
-	if (!company) throw new Error ("That company does not exist");
-
-	return res.json(company);
+		const [company, metadata] = await sequelize.query(
+			`
+				SELECT id, name, adress, fk_city_id
+				FROM company
+				WHERE id = $companyId;
+			`,
+			{
+				bind: { companyId: companyId },
+			}
+		)
+	
+		if (!company) throw new Error ("That company does not exist");
+	
+		return res.json(company);
+		
+	} catch (error) {
+		return res.status(error.statusCode || 500).json(error.message)
+		
+	}
+	
 }
 
 exports.deleteCompanyById = async (req, res) => {
-	const companyId = req.params.companyId
+	try {
+		const companyId = req.params.companyId
 
-	if (companyId != req.user?.companyId && req.user.role !== userRoles.ADMIN) {
-		throw new UnauthorizedError('Unauthorized Access')
+		if (companyId != req.user?.companyId && req.user.role !== userRoles.ADMIN) {
+			throw new UnauthorizedError('Unauthorized Access')
+		}
+	
+	
+		const [results, metadata] = await sequelize.query('DELETE FROM company WHERE id = $companyId RETURNING *', {
+			bind: { companyId },
+		})
+	
+	
+		if (!results || !results[0]) throw new NotFoundError('That company does not exist')
+	
+		await sequelize.query('DELETE FROM company WHERE id = $companyId', {
+			bind: { companyId },
+		})
+	
+		return res.sendStatus(204)
+		
+	} catch (error) {
+		return res.status(error.statusCode || 500).json(error.message);
 	}
-
-
-	const [results, metadata] = await sequelize.query('DELETE FROM company WHERE id = $companyId RETURNING *', {
-		bind: { companyId },
-	})
-
-
-	if (!results || !results[0]) throw new NotFoundError('That company does not exist')
-
-	await sequelize.query('DELETE FROM company WHERE id = $companyId', {
-		bind: { companyId },
-	})
-
-	return res.sendStatus(204)
+	
 }
 
 exports.createNewCompany = async (req, res) => {
@@ -121,17 +134,17 @@ exports.createNewCompany = async (req, res) => {
 		
 		
 	} catch (error) { 
-
-		console.log("You must input valid credentials");
 		return res.status(error.statusCode || 500).json(error.message)
 		
 	}
 };
 
 exports.updateCompanyById = async (req, res) => {
-	const { name, adress, fk_city_id } = req.body;
-	const companyId = req.params.companyId;
+	
 	try {
+		const { name, adress, fk_city_id } = req.body;
+		const companyId = req.params.companyId;
+		
 	  if (req.user?.role !== userRoles.ADMIN) {
 		throw new UnauthorizedError("Unauthorized Access");
 	  }
@@ -163,7 +176,6 @@ exports.updateCompanyById = async (req, res) => {
   
 	  return res.status(200).json(updatedcompany[0]);
 	} catch (error) {
-	  console.error(error);
 	  return res.status(500).json({ message: error.message });
 	}
   };
