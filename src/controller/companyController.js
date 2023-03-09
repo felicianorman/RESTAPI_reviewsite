@@ -114,8 +114,6 @@ exports.createNewCompany = async (req, res) => {
         adress: adress,
         fk_city_id: fk_city_id,
         fk_user_id: fk_user_id,
-
-
         
      },
 		type: QueryTypes.INSERT, 
