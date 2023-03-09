@@ -10,7 +10,7 @@ exports.registerSchema = [
 ]
 
 exports.loginSchema = [
-	body("username").not().isEmpty().withMessage("You must provide a username"),
+	body("email").not().isEmpty().withMessage("You must provide a username"),
 	body("password").not().isEmpty().withMessage("You must provide a password"),
   ]
 

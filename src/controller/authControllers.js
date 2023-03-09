@@ -46,7 +46,7 @@ exports.login = async (req, res) => {
   const { email, password: candidatePassword } = req.body;
 
   const [user, metadata] = await sequelize.query(
-    "SELECT * FROM user WHERE username = $email LIMIT 1;",
+    "SELECT * FROM user JOIN role ON user.fk_user_role_id = role.id WHERE email = $email LIMIT 1;",
     {
       bind: { email },
       type: QueryTypes.SELECT,
@@ -63,7 +63,7 @@ exports.login = async (req, res) => {
     userId: user.id,
     email: user.email,
     role:
-      userRoles.ADMIN === user.fk_user_role_id
+      userRoles.ADMIN === user.user_role
         ? userRoles.ADMIN
         : userRoles.USER,
   };
