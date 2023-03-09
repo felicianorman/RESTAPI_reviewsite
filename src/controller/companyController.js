@@ -102,7 +102,6 @@ exports.deleteCompanyById = async (req, res) => {
 	})
 
 	return res.sendStatus(204)
-	// lägg till att bara admin eller den som äger företaget, användaren som är kopplad och samma sak med update.
 }
 
 exports.createNewCompany = async (req, res) => {
