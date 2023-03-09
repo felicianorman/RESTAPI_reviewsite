@@ -20,6 +20,18 @@ exports.companySchema = [
 	  .isEmpty()
 	  .isLength({min:5})
 	  .withMessage('You must provide a company name'),
-	  
+	body('name')
+		.not()
+		.isEmpty()
+		.withMessage('You must provide a company name'),
+	body('adress')
+		.not()
+		.isEmpty()
+		.withMessage('You must provide a adress name'),
+	body('city')
+		.not()
+		.isEmpty()
+		.withMessage('You must provide a city for the company'),
+	
   ]
 
