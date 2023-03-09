@@ -4,12 +4,14 @@ const { QueryTypes } = require("sequelize");
 const { UnauthorizedError, NotFoundError } = require("../utils/errors");
 
 exports.getAllUsers = async (req, res) => {
-  const offset = req.query.offset;
-  const limit = req.query.limit;
+  try {
+    const limit = req.query.limit || 5;
+    const offset = req.query.offset || 0;
 
-  if (req.user.user_role !== userRoles.ADMIN) {
-    throw new UnauthorizedError("You do not have access");
-  } else {
+    if (req.user.role !== userRoles.ADMIN) {
+      throw new UnauthorizedError("Unauthorized Access");
+    }
+
     const [users, metadata] = await sequelize.query(
       `SELECT id, username FROM "user" LIMIT $limit OFFSET $offset;`,
       {
@@ -20,41 +22,45 @@ exports.getAllUsers = async (req, res) => {
       }
     );
     return res.json(users);
+  } catch (error) {
+    return res.status(error.statusCode || 500).json(error.message);
   }
 };
 
 exports.getUserById = async (req, res) => {
-  const userId = req.params.userId;
+  try {
+    const userId = req.params.userId;
 
-  const [user, metadata] = await sequelize.query(
-    "SELECT id, username FROM user WHERE id = $userId",
-    {
-      bind: { userId },
-      type: QueryTypes.SELECT,
-    }
-  );
+    const [user, metadata] = await sequelize.query(
+      "SELECT id, username FROM user WHERE id = $userId",
+      {
+        bind: { userId },
+        type: QueryTypes.SELECT,
+      }
+    );
 
-  if (!user) return new NotFoundError();
+    if (!user) throw new NotFoundError("That user does not exist");
 
-  return res.json(user);
+    return res.json(user);
+  } catch (error) {
+    return res.status(error.statusCode || 500).json(error.message);
+  }
 };
 
 exports.deleteUserById = async (req, res) => {
-  const userId = req.params.userId;
+  try {
+    const userId = req.params.userId;
 
-  if (
-    userId != req.user.userId &&
-    req.user.fk_user_role_id !== userRoles.ADMIN
-  ) {
-    throw new UnauthorizedError("You do not have access");
+    const [user, metadata] = await sequelize.query(
+      "DELETE FROM user WHERE id = $userId;",
+      {
+        bind: { userId: userId },
+      }
+    );
+
+    return res.sendStatus(204);
+
+  } catch (error) {
+    return res.status(error.statusCode || 500).json(error.message);
   }
-
-  const [user, metadata] = await sequelize.query(
-    "DELETE FROM user WHERE id = $userId;",
-    {
-      bind: { userId: userId },
-    }
-  );
-
-  return res.sendStatus(204);
 };
