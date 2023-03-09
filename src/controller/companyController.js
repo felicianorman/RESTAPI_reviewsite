@@ -9,8 +9,6 @@ exports.getAllCompanies = async (req, res) => {
 	  const offset = Number(req.query.offset || 0);
 	  const city = req.query.city;
   
-	  console.log(limit);
-  
 	  if (!city) {
 		const [companies, metadata] = await sequelize.query(
 		  `SELECT * FROM company ORDER by name ASC, fk_city_id ASC LIMIT $limit OFFSET $offset;`,
@@ -34,7 +32,7 @@ exports.getAllCompanies = async (req, res) => {
 	  } else {
 		const [companies, metadata] = await sequelize.query(
 		  `SELECT * FROM company 
-		  WHERE fk_city_id = (SELECT id FROM city WHERE UPPER(cityname)= UPPER(TRIM($cityName))) 
+		  WHERE fk_city_id = (SELECT id FROM city WHERE UPPER(cityName)= UPPER(TRIM($cityName))) 
 		  ORDER BY name ASC 
 		  LIMIT $limit 
 		  OFFSET $offset;`,
@@ -74,16 +72,13 @@ exports.getCompanyById = async (req, res) => {
 		}
 	)
 
-    
 	if (!company) throw new Error ("That company does not exist");
 
 	return res.json(company);
 }
 
 exports.deleteCompanyById = async (req, res) => {
-
 	const companyId = req.params.companyId
-
 
 	if (companyId != req.user?.companyId && req.user.role !== userRoles.ADMIN) {
 		throw new UnauthorizedError('Unauthorized Access')
@@ -131,9 +126,7 @@ exports.createNewCompany = async (req, res) => {
 		return res.status(error.statusCode || 500).json(error.message)
 		
 	}
-	
-	
-}
+};
 
 exports.updateCompanyById = async (req, res) => {
 	const { name, adress, fk_city_id } = req.body;
@@ -167,8 +160,6 @@ exports.updateCompanyById = async (req, res) => {
 		  },
 		}
 	  );
-  
-	  console.log(updatedcompany[0]);
   
 	  return res.status(200).json(updatedcompany[0]);
 	} catch (error) {
