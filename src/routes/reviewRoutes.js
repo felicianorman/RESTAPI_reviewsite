@@ -11,10 +11,10 @@ const {
   // getAllReviews,
 } = require("../controller/reviewController");
 
-// router.get("/", getAllReviews);
+router.get("/", getAllReviews);
 router.post("/", createNewReview);
 router.put("/:reviewID", updateReview);
 // router.delete("/:reviewID", deleteReviewByID);
-router.get("/:reviewID", getReviewByID);
+// router.get("/:reviewID", getReviewByID);
 
 module.exports = router;
