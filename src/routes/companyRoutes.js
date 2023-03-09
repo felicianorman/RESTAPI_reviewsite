@@ -7,9 +7,9 @@ const { isAuthenticated, authorizeRoles} = require("../middleware/authentication
 const { validate } = require('../middleware/validation/validationMiddleware');
 const { companySchema } = require('../middleware/validation/validationSchemas');
 
-router.get('/', validate(companySchema), getAllCompanies)
-router.get('/:companyId', validate(companySchema), getCompanyById)
-router.delete('/:companyId', validate(companySchema), isAuthenticated, authorizeRoles(userRoles.ADMIN, userRoles.OWNER), deleteCompanyById)
+router.get('/', getAllCompanies)
+router.get('/:companyId', getCompanyById)
+router.delete('/:companyId', isAuthenticated, authorizeRoles(userRoles.ADMIN, userRoles.OWNER), deleteCompanyById)
 router.post('/', validate(companySchema), isAuthenticated, authorizeRoles(userRoles.ADMIN, userRoles.OWNER), createNewCompany)
 router.put('/:companyId', validate(companySchema), isAuthenticated, authorizeRoles(userRoles.ADMIN, userRoles.OWNER), updateCompanyById);
 

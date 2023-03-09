@@ -26,11 +26,11 @@ exports.companySchema = [
 		.not()
 		.isEmpty()
 		.withMessage('You must provide a adress name'),
-	body('city')
+	body('fk_city_id')
 		.not()
 		.isEmpty()
 		.withMessage('You must provide a city for the company'),
-	body('user id')
+	body('fk_user_id')
 		.not()
 		.isEmpty()
 		.withMessage('You must provide a user id number'),
