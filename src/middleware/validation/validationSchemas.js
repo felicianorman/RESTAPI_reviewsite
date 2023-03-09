@@ -16,7 +16,6 @@ exports.loginSchema = [
   body("password").not().isEmpty().withMessage("You must provide a password"),
 ];
 
-
 exports.companySchema = [
 	body('name')
 	  .not()
@@ -37,4 +36,3 @@ exports.companySchema = [
 		.withMessage('You must provide a city for the company'),
 	
   ]
-
