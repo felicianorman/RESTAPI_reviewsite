@@ -30,10 +30,8 @@ const seedCompaniesDb = async () => {
             name TEXT,
             adress TEXT,
             fk_city_id TEXT ,
-            fk_user_role_id TEXT,
             fk_user_id TEXT,
             FOREIGN KEY(fk_city_id) REFERENCES city(id)
-            FOREIGN KEY(fk_user_role_id) REFERENCES role(id)
             FOREIGN KEY(fk_user_id) REFERENCES user(id)
         )`),
       await sequelize.query(`
@@ -76,17 +74,17 @@ const seedCompaniesDb = async () => {
      `);
 
     await sequelize.query(
-      `INSERT INTO company (name, adress, fk_city_id, fk_user_role_id, fk_user_id) VALUES
-      ('Sax och Fön', 'Drottninggatan 105', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 4)),
-      ('Hårfin', 'Salonggatan 1', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 5)),
-      ('Peach Stockholm', 'Vasagatan 12', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 6)),
-      ('Hårfin', 'Salonggatan 1', (SELECT id FROM city WHERE cityname = 'Gothenburg'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 4)),
-      ('Snap Frisör', 'Odyssens väg  7', (SELECT id FROM city WHERE cityname = 'Halmstad'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 5)),
-      ('Haircare', 'Frisörgatan 102', (SELECT id FROM city WHERE cityname = 'Halmstad'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 6)),
-      ('Barber Shop', 'Drakvägen 1', (SELECT id FROM city WHERE cityname = 'Gothenburg'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 4)),
-      ('Håret', 'Mjällgatan 93', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 6)),
-      ('Frisör Kungen', 'Saxgatan 93', (SELECT id FROM city WHERE cityname = 'Gothenburg'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 5)),
-      ('Hair Lady', 'Slinggatan 81', (SELECT id FROM city WHERE cityname = 'Halmstad'), (SELECT id FROM "role" WHERE user_role = 'OWNER'), (SELECT id FROM "user" WHERE id = 4))`
+      `INSERT INTO company (name, adress, fk_city_id, fk_user_id) VALUES
+      ('Sax och Fön', 'Drottninggatan 105', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "user" WHERE id = 4)),
+      ('Hårfin', 'Salonggatan 1', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "user" WHERE id = 5)),
+      ('Peach Stockholm', 'Vasagatan 12', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "user" WHERE id = 6)),
+      ('Hårfin', 'Salonggatan 1', (SELECT id FROM city WHERE cityname = 'Gothenburg'), (SELECT id FROM "user" WHERE id = 4)),
+      ('Snap Frisör', 'Odyssens väg  7', (SELECT id FROM city WHERE cityname = 'Halmstad'), (SELECT id FROM "user" WHERE id = 5)),
+      ('Haircare', 'Frisörgatan 102', (SELECT id FROM city WHERE cityname = 'Halmstad'), (SELECT id FROM "user" WHERE id = 6)),
+      ('Barber Shop', 'Drakvägen 1', (SELECT id FROM city WHERE cityname = 'Gothenburg'), (SELECT id FROM "user" WHERE id = 4)),
+      ('Håret', 'Mjällgatan 93', (SELECT id FROM city WHERE cityname = 'Stockholm'), (SELECT id FROM "user" WHERE id = 6)),
+      ('Frisör Kungen', 'Saxgatan 93', (SELECT id FROM city WHERE cityname = 'Gothenburg'), (SELECT id FROM "user" WHERE id = 5)),
+      ('Hair Lady', 'Slinggatan 81', (SELECT id FROM city WHERE cityname = 'Halmstad'), (SELECT id FROM "user" WHERE id = 4))`
     );
 
     await sequelize.query(`
