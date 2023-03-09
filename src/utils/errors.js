@@ -6,7 +6,6 @@ const catchErrors = (fn) => {
 
 class CustomAPIError extends Error {
   constructor(message) {
-    //VILKET ÄR MEDDELANDET? HÄNGER DET IHOP MED CONTROLLERS ERROR? DERAS MESSAGE?
     super(message);
   }
 }
@@ -15,7 +14,7 @@ class BadRequestError extends CustomAPIError {
   constructor(message) {
     super(message);
     this.statusCode = 400;
-    this.name = "BadRequestError"; //KAN MAN SKRIVA VAD SOM HELST HÄR?
+    this.name = "BadRequestError";
   }
 }
 
@@ -51,7 +50,7 @@ class ValidationError extends BadRequestError {
 }
 
 module.exports = {
-  catchErrors, //VARFÖR ÄR DENNA GUL OCH DE ANDRA GRÖNA? :)
+  catchErrors,
   NotFoundError,
   BadRequestError,
   UnauthenticatedError,

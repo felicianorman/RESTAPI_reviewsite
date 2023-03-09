@@ -1,8 +1,8 @@
 const { NotFoundError, BadRequestError } = require("../utils/errors");
 const { sequelize } = require("../database/config");
-const { QueryTypes } = require("sequelize"); //Vad är detta för filväg i jämförelse med de ovan? Hur plockar den upp?
 
-//skapa ny review ***
+const { QueryTypes } = require("sequelize");
+
 exports.createNewReview = async (req, res) => {
   const { review_title, review_description, review_rating } = req.body;
   const hairId = req.params.hairId;
@@ -34,7 +34,6 @@ exports.createNewReview = async (req, res) => {
     .sendStatus(201);
 };
 
-//uppdatera review via id ***
 exports.updateReview = async (req, res) => {
   const reviewId = req.params.reviewId;
 
@@ -46,7 +45,6 @@ exports.updateReview = async (req, res) => {
     token = authHeader.split(" ")[1];
   }
 
-  //hämta usern via ID, via token
   const payload = jwt.verify(token, process.env.JWT_SECRET);
   const userId = payload.userId;
   const role = payload.role;
@@ -55,7 +53,6 @@ exports.updateReview = async (req, res) => {
   console.log(userRoles.ADMIN);
   console.log(role);
 
-  //hämta reviewen via DB
   const [reviewPickUp, metadata] = await sequelize.query(
     `SELECT fk_user_id FROM review WHERE ID = $reviewId;`,
     {
@@ -120,7 +117,6 @@ exports.updateReview = async (req, res) => {
   return res.sendStatus(200).send(updateReview);
 };
 
-//radera review via id ***
 exports.deleteReviewById = async (req, res) => {
   const reviewId = req.params.reviewid;
   const userId = req.user.userId;
@@ -150,19 +146,18 @@ exports.deleteReviewById = async (req, res) => {
   }
 };
 
-//hämta review via id ------------------------------------------------ FRÅGA PETTER OM HJÄLP
 exports.getReviewById = async (req, res) => {
-  const userId = req.params.userId;
+  const reviewId = req.params.reviewID;
 
   const [review, metadata] = await sequelize.query(
     `
-  SELECT  review.id, review.title, review.rating, review.fk_hairdresser_id AS hairdresser, user.user_name AS user, review.fk_user_id AS user_ID 
-  FROM review
-  JOIN user ON user.id = review.fk_user_id
-  WHERE review.fk_user_id = $userId
+    SELECT  review.id, review.title, review.rating, review.fk_company_id AS hairdresser, user.username AS user, review.fk_user_id AS user_ID 
+    FROM review
+    JOIN user ON user.id = review.fk_user_id
+    WHERE review.id = $reviewId
     `,
     {
-      bind: { userId: userId },
+      bind: { reviewId: reviewId },
     }
   );
 
@@ -174,13 +169,12 @@ exports.getReviewById = async (req, res) => {
   return res.json(review);
 };
 
-//hämta alla reviews ***
 exports.getAllReviews = async (req, res) => {
   try {
     const [review, metadata] = await sequelize.query(`
     SELECT * FROM review
     `);
-    return res.send("Hämta alla recensioner"); //scaffoldreturn
+    return res.send("Hämta alla recensioner");
   } catch (error) {
     console.error(error);
     return res.status(500).json({

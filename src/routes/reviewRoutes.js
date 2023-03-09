@@ -6,15 +6,15 @@ const { UnauthenticatedError, UnauthorizedError } = require("../utils/errors");
 const {
   createNewReview,
   updateReview,
-  // deleteReviewByID,
-  getReviewByID,
-  // getAllReviews,
+  deleteReviewByID,
+  getReviewById,
+  getAllReviews,
 } = require("../controller/reviewController");
 
-// router.get("/", getAllReviews);
+router.get("/", getAllReviews);
 router.post("/", createNewReview);
 router.put("/:reviewID", updateReview);
-// router.delete("/:reviewID", deleteReviewByID);
-// router.get("/:reviewID", getReviewByID);
+router.delete("/:reviewID", deleteReviewByID);
+router.get("/:reviewID", getReviewById);
 
 module.exports = router;
