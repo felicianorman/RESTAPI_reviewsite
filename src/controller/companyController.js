@@ -105,22 +105,34 @@ exports.deleteCompanyById = async (req, res) => {
 }
 
 exports.createNewCompany = async (req, res) => {
-	const { name, adress, fk_city_id, fk_user_id} = req.body
+	try {
+		const { name, adress, fk_city_id, fk_user_id} = req.body
 
-	const [newCompanyId] = await sequelize.query('INSERT INTO company (name, adress, fk_city_id, fk_user_id) VALUES ($name, $adress, $fk_city_id, $fk_user_id);', {
-		bind: { 
-        name: name,
-        adress: adress,
-        fk_city_id: fk_city_id,
-        fk_user_id: fk_user_id,
-        
-     },
-		type: QueryTypes.INSERT, 
-	})
+		const [newCompanyId] = await sequelize.query('INSERT INTO company (name, adress, fk_city_id, fk_user_id) VALUES ($name, $adress, $fk_city_id, $fk_user_id);', {
+			bind: { 
+			name: name,
+			adress: adress,
+			fk_city_id: fk_city_id,
+			fk_user_id: fk_user_id,
+			
+		 },
+			type: QueryTypes.INSERT, 
+		})
+		
+		return res
+		.setHeader('Location', `${req.protocol}://${req.headers.host}/api/v1/companies/${newCompanyId}`)
+		.sendStatus(201)
+
+		
+		
+	} catch (error) { 
+
+		console.log("You must input valid credentials");
+		return res.status(error.statusCode || 500).json(error.message)
+		
+	}
 	
-	return res
-    .setHeader('Location', `${req.protocol}://${req.headers.host}/api/v1/companies/${newCompanyId}`)
-    .sendStatus(201)
+	
 }
 
 exports.updateCompanyById = async (req, res) => {
