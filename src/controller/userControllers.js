@@ -4,11 +4,23 @@ const { QueryTypes } = require("sequelize");
 const { UnauthorizedError, NotFoundError } = require("../utils/errors");
 
 exports.getAllUsers = async (req, res) => {
-  //lägg till limit
-  const [users, metadata] = await sequelize.query(
-    `SELECT id, username FROM "user";`
-  );
-  return res.json(users);
+  const offset = req.query.offset;
+  const limit = req.query.limit;
+
+  if (req.user.user_role !== userRoles.ADMIN) {
+    throw new UnauthorizedError("You do not have access");
+  } else {
+    const [users, metadata] = await sequelize.query(
+      `SELECT id, username FROM "user" LIMIT $limit OFFSET $offset;`,
+      {
+        bind: {
+          offset: offset,
+          limit: limit,
+        },
+      }
+    );
+    return res.json(users);
+  }
 };
 
 exports.getUserById = async (req, res) => {
@@ -22,26 +34,27 @@ exports.getUserById = async (req, res) => {
     }
   );
 
-  if (!user) return new NotFoundError;
+  if (!user) return new NotFoundError();
 
   return res.json(user);
 };
 
-//lägg till admin
 exports.deleteUserById = async (req, res) => {
   const userId = req.params.userId;
 
-  // if (
-  //   userId != req.user.userId &&
-  //   req.user.fk_user_role_id !== userRoles.ADMIN
-  // ) {
-  //   throw new UnauthorizedError('You do not ha')
-  // }
+  if (
+    userId != req.user.userId &&
+    req.user.fk_user_role_id !== userRoles.ADMIN
+  ) {
+    throw new UnauthorizedError("You do not have access");
+  }
 
-  const [user, metadata] = await sequelize.query('DELETE FROM user WHERE id = $userId;', 
-  {
-    bind: { userId: userId }
-  } )
+  const [user, metadata] = await sequelize.query(
+    "DELETE FROM user WHERE id = $userId;",
+    {
+      bind: { userId: userId },
+    }
+  );
 
-  return res.sendStatus(204)
+  return res.sendStatus(204);
 };
