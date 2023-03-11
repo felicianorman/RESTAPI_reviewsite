@@ -174,11 +174,11 @@ exports.getAllReviews = async (req, res) => {
     const [review, metadata] = await sequelize.query(`
     SELECT * FROM review
     `);
-    return res.send("Hämta alla recensioner");
+    return json(review); //ändra detta så de skickar tillbaka reviews
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       message: error.message,
-    });
+    }); //l'gg denna på andra controllers för full hantering
   }
 };
