@@ -18,3 +18,4 @@ router.delete("/:reviewID", isAuthenticated, deleteReviewById);
 router.get("/:reviewID", isAuthenticated, getReviewById);
 
 module.exports = router;
+//lade till isAuthenticated

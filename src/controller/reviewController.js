@@ -7,7 +7,7 @@ const { QueryTypes } = require("sequelize");
 exports.createNewReview = async (req, res) => {
   const { review_title, review_description, review_rating } = req.body;
   const hairId = req.params.hairId;
-  const userId = req.user.userId; //lägg till isAuth... i routes. Dubbelkolla att det heter userId. Att de fungerar i postman.
+  const userId = req.user.userId; //lägg till isAuth... i routes. Dubbelkolla att det heter userId också.
 
   const [newReviewId] = await sequelize.query(
     `
@@ -54,7 +54,7 @@ exports.updateReview = async (req, res) => {
   console.log(userRoles.ADMIN);
   console.log(role);
 
-  const [reviewPickUp, metadata] = await sequelize.query(
+  const [reviewPickUp] = await sequelize.query(
     `SELECT fk_user_id FROM review WHERE ID = $reviewId;`,
     {
       bind: {
@@ -75,7 +75,7 @@ exports.updateReview = async (req, res) => {
   }
 
   if (!descriptionText && rating) {
-    const [updateReview, metadata] = await sequelize.query(
+    const [updateReview] = await sequelize.query(
       `UPDATE review SET rating = $rating
       WHERE id = $reviewId RETURNING *;`,
       {
@@ -88,7 +88,7 @@ exports.updateReview = async (req, res) => {
     );
   } else {
     if (descriptionText && !rating) {
-      const [updateReview, metadata] = await sequelize.query(
+      const [updateReview] = await sequelize.query(
         `UPDATE review SET description = $description
         WHERE id = $reviewId RETURNING *;`,
         {
@@ -100,7 +100,7 @@ exports.updateReview = async (req, res) => {
         }
       );
     } else {
-      const [updateReview, metadata] = await sequelize.query(
+      const [updateReview] = await sequelize.query(
         `UPDATE review SET description = $description, rating = $rating
         WHERE id = $reviewId RETURNING *;`,
         {
@@ -150,7 +150,7 @@ exports.deleteReviewById = async (req, res) => {
 exports.getReviewById = async (req, res) => {
   const reviewId = req.params.reviewID;
 
-  const [review, metadata] = await sequelize.query(
+  const [review] = await sequelize.query(
     `
     SELECT  review.id, review.title, review.rating, review.fk_company_id AS hairdresser, user.username AS user, review.fk_user_id AS user_ID 
     FROM review
@@ -162,24 +162,25 @@ exports.getReviewById = async (req, res) => {
     }
   );
 
-  if (!review)
+  if (!review || review.length == 0) {
     throw new NotFoundError(
       "Tyvärr har denna kund inte skrivit någon recension än!"
     );
+  }
 
-  return res.json(review);
+  return res.json(review); //skickar tillbaka review nu?
 };
 
 exports.getAllReviews = async (req, res) => {
   try {
-    const [review, metadata] = await sequelize.query(`
+    const [review] = await sequelize.query(`
     SELECT * FROM review
     `);
-    return res.json(review); //ändra detta så de skickar tillbaka reviews (färdig?)
+    return res.json(review);
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       message: error.message,
-    }); //lägg denna catch på andra controllers för full hantering
+    });
   }
 };
