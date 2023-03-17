@@ -6,7 +6,7 @@ const { userRoles } = require('../constants/users');
 
 router.get('/', isAuthenticated, authorizeRoles(userRoles.ADMIN) , getAllUsers)
 router.get('/:userId', getUserById)
-router.delete('/:userId', isAuthenticated, deleteUserById)
+router.delete('/:userId', isAuthenticated, authorizeRoles(userRoles.ADMIN), deleteUserById)
 
 
 module.exports = router

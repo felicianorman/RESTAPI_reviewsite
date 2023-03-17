@@ -1,18 +1,20 @@
-const { body } = require('express-validator')
+const { body } = require("express-validator");
 
 exports.registerSchema = [
-	body('email').isEmail().withMessage('You must provide a valid email address'),
-	body('password')
-		.not()
-		.isEmpty()
-		.isLength({ min: 6 })
-		.withMessage('You must provide a password that is at least 8 characters long'),
-]
+  body("email").isEmail().withMessage("You must provide a valid email address"),
+  body("password")
+    .not()
+    .isEmpty()
+    .isLength({ min: 6 })
+    .withMessage(
+      "You must provide a password that is at least 8 characters long"
+    ),
+];
 
 exports.loginSchema = [
-	body("email").not().isEmpty().withMessage("You must provide a username"),
-	body("password").not().isEmpty().withMessage("You must provide a password"),
-  ]
+  body("email").isEmail().withMessage("You must provide a valid email adress"),
+  body("password").not().isEmpty().withMessage("You must provide a password"),
+];
 
 exports.companySchema = [
 	body('name')
@@ -20,6 +22,16 @@ exports.companySchema = [
 	  .isEmpty()
 	  .isLength({min:5})
 	  .withMessage('You must provide a company name'),
-	  
+	body('adress')
+		.not()
+		.isEmpty()
+		.withMessage('You must provide a adress name'),
+	body('fk_city_id')
+		.not()
+		.isEmpty()
+		.withMessage('You must provide a city for the company'),
+	body('fk_user_id')
+		.not()
+		.isEmpty()
+		.withMessage('You must provide a user id number'),
   ]
-

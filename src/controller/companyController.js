@@ -9,8 +9,6 @@ exports.getAllCompanies = async (req, res) => {
 	  const offset = Number(req.query.offset || 0);
 	  const city = req.query.city;
   
-	  console.log(limit);
-  
 	  if (!city) {
 		const [companies, metadata] = await sequelize.query(
 		  `SELECT * FROM company ORDER by name ASC, fk_city_id ASC LIMIT $limit OFFSET $offset;`,
@@ -34,7 +32,7 @@ exports.getAllCompanies = async (req, res) => {
 	  } else {
 		const [companies, metadata] = await sequelize.query(
 		  `SELECT * FROM company 
-		  WHERE fk_city_id = (SELECT id FROM city WHERE UPPER(cityname)= UPPER(TRIM($cityName))) 
+		  WHERE fk_city_id = (SELECT id FROM city WHERE UPPER(cityName)= UPPER(TRIM($cityName))) 
 		  ORDER BY name ASC 
 		  LIMIT $limit 
 		  OFFSET $offset;`,
@@ -61,75 +59,92 @@ exports.getAllCompanies = async (req, res) => {
   };
 
 exports.getCompanyById = async (req, res) => {
-	const companyId = req.params.companyId
+	try {
+		const companyId = req.params.companyId
 
-	const [company, metadata] = await sequelize.query(
-		`
-			SELECT id, name, adress, fk_city_id
-			FROM company
-			WHERE id = $companyId;
-		`,
-		{
-			bind: { companyId: companyId },
-		}
-	)
-
-    
-	if (!company) throw new Error ("That company does not exist");
-
-	return res.json(company);
+		const [company, metadata] = await sequelize.query(
+			`
+				SELECT id, name, adress, fk_city_id
+				FROM company
+				WHERE id = $companyId;
+			`,
+			{
+				bind: { companyId: companyId },
+			}
+		)
+	
+		if (!company) throw new Error ("That company does not exist");
+	
+		return res.json(company);
+		
+	} catch (error) {
+		return res.status(error.statusCode || 500).json(error.message)
+		
+	}
+	
 }
 
 exports.deleteCompanyById = async (req, res) => {
+	try {
+		const companyId = req.params.companyId
 
-	const companyId = req.params.companyId
-
-
-	if (companyId != req.user?.companyId && req.user.role !== userRoles.ADMIN) {
-		throw new UnauthorizedError('Unauthorized Access')
+		if (companyId != req.user?.companyId && req.user.role !== userRoles.ADMIN) {
+			throw new UnauthorizedError('Unauthorized Access')
+		}
+	
+	
+		const [results, metadata] = await sequelize.query('DELETE FROM company WHERE id = $companyId RETURNING *', {
+			bind: { companyId },
+		})
+	
+	
+		if (!results || !results[0]) throw new NotFoundError('That company does not exist')
+	
+		await sequelize.query('DELETE FROM company WHERE id = $companyId', {
+			bind: { companyId },
+		})
+	
+		return res.sendStatus(204)
+		
+	} catch (error) {
+		return res.status(error.statusCode || 500).json(error.message);
 	}
-
-
-	const [results, metadata] = await sequelize.query('DELETE FROM company WHERE id = $companyId RETURNING *', {
-		bind: { companyId },
-	})
-
-
-	if (!results || !results[0]) throw new NotFoundError('That company does not exist')
-
-	await sequelize.query('DELETE FROM company WHERE id = $companyId', {
-		bind: { companyId },
-	})
-
-	return res.sendStatus(204)
-	// lägg till att bara admin eller den som äger företaget, användaren som är kopplad och samma sak med update.
+	
 }
 
 exports.createNewCompany = async (req, res) => {
-	const { name, adress, fk_city_id, fk_user_id} = req.body
+	try {
+		const { name, adress, fk_city_id, fk_user_id} = req.body
 
-	const [newCompanyId] = await sequelize.query('INSERT INTO company (name, adress, fk_city_id, fk_user_id) VALUES ($name, $adress, $fk_city_id, $fk_user_id);', {
-		bind: { 
-        name: name,
-        adress: adress,
-        fk_city_id: fk_city_id,
-        fk_user_id: fk_user_id,
+		const [newCompanyId] = await sequelize.query('INSERT INTO company (name, adress, fk_city_id, fk_user_id) VALUES ($name, $adress, $fk_city_id, $fk_user_id);', {
+			bind: { 
+			name: name,
+			adress: adress,
+			fk_city_id: fk_city_id,
+			fk_user_id: fk_user_id,
+			
+		 },
+			type: QueryTypes.INSERT, 
+		})
+		
+		return res
+		.setHeader('Location', `${req.protocol}://${req.headers.host}/api/v1/companies/${newCompanyId}`)
+		.sendStatus(201)
 
-
-        
-     },
-		type: QueryTypes.INSERT, 
-	})
-	
-	return res
-    .setHeader('Location', `${req.protocol}://${req.headers.host}/api/v1/companies/${newCompanyId}`)
-    .sendStatus(201)
-}
+		
+		
+	} catch (error) { 
+		return res.status(error.statusCode || 500).json(error.message)
+		
+	}
+};
 
 exports.updateCompanyById = async (req, res) => {
-	const { name, adress, fk_city_id } = req.body;
-	const companyId = req.params.companyId;
+	
 	try {
+		const { name, adress, fk_city_id } = req.body;
+		const companyId = req.params.companyId;
+		
 	  if (req.user?.role !== userRoles.ADMIN) {
 		throw new UnauthorizedError("Unauthorized Access");
 	  }
@@ -159,11 +174,8 @@ exports.updateCompanyById = async (req, res) => {
 		}
 	  );
   
-	  console.log(updatedcompany[0]);
-  
 	  return res.status(200).json(updatedcompany[0]);
 	} catch (error) {
-	  console.error(error);
 	  return res.status(500).json({ message: error.message });
 	}
   };
