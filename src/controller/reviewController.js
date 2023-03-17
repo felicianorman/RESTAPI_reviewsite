@@ -1,12 +1,13 @@
 const { NotFoundError, BadRequestError } = require("../utils/errors");
 const { sequelize } = require("../database/config");
+const { isAuthenticated } = require("../middleware/authenticationMiddleware");
 
 const { QueryTypes } = require("sequelize");
 
 exports.createNewReview = async (req, res) => {
   const { review_title, review_description, review_rating } = req.body;
   const hairId = req.params.hairId;
-  const userId = req.user.userId;
+  const userId = req.user.userId; //lägg till isAuth... i routes. Dubbelkolla att det heter userId. Att de fungerar i postman.
 
   const [newReviewId] = await sequelize.query(
     `
@@ -174,11 +175,11 @@ exports.getAllReviews = async (req, res) => {
     const [review, metadata] = await sequelize.query(`
     SELECT * FROM review
     `);
-    return json(review); //ändra detta så de skickar tillbaka reviews
+    return res.json(review); //ändra detta så de skickar tillbaka reviews (färdig?)
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       message: error.message,
-    }); //l'gg denna på andra controllers för full hantering
+    }); //lägg denna catch på andra controllers för full hantering
   }
 };
