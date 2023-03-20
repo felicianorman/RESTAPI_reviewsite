@@ -150,32 +150,25 @@ exports.deleteReviewById = async (req, res) => {
 exports.getReviewById = async (req, res) => {
   const reviewId = req.params.reviewID;
 
-  try {
-    const [review] = await sequelize.query(
-      `
-        SELECT  review.id, review.title, review.rating, review.fk_company_id AS hairdresser, user.username AS user, review.fk_user_id AS user_ID 
-        FROM review
-        JOIN user ON user.id = review.fk_user_id
-        WHERE review.id = $reviewId
-        `,
-      {
-        bind: { reviewId: reviewId },
-      }
-    );
-
-    if (!review || review.length == 0) {
-      throw new NotFoundError(
-        "Tyvärr har denna kund inte skrivit någon recension än!"
-      );
+  const [review] = await sequelize.query(
+    `
+    SELECT  review.id, review.title, review.rating, review.fk_company_id AS hairdresser, user.username AS user, review.fk_user_id AS user_ID 
+    FROM review
+    JOIN user ON user.id = review.fk_user_id
+    WHERE review.id = $reviewId
+    `,
+    {
+      bind: { reviewId: reviewId },
     }
+  );
 
-    return res.json(review);
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      message: error.message,
-    });
+  if (!review || review.length == 0) {
+    throw new NotFoundError(
+      "Tyvärr har denna kund inte skrivit någon recension än!"
+    );
   }
+
+  return res.json(review);
 };
 
 exports.getAllReviews = async (req, res) => {
