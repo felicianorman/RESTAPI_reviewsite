@@ -13,9 +13,8 @@ const {
 
 router.get("/", getAllReviews);
 router.post("/", isAuthenticated, createNewReview);
-router.put("/:reviewID", updateReview);
+router.put("/:reviewID", isAuthenticated, updateReview);
 router.delete("/:reviewID", isAuthenticated, deleteReviewById);
 router.get("/:reviewID", isAuthenticated, getReviewById);
 
 module.exports = router;
-//lade till isAuthenticated
